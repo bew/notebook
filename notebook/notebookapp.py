@@ -903,6 +903,12 @@ class NotebookApp(JupyterApp):
     def _update_mathjax_config(self, change):
         self.log.info("Using MathJax configuration file: %s", change['new'])
 
+    webapp_class = Type(
+        default_value = NotebookWebApplication,
+        config = True,
+        help = 'The notebook web application class to use.'
+    )
+
     contents_manager_class = Type(
         default_value=LargeFileManager,
         klass=ContentsManager,
@@ -1139,7 +1145,7 @@ class NotebookApp(JupyterApp):
             self.log.critical("\t$ python -m notebook.auth password")
             sys.exit(1)
 
-        self.web_app = NotebookWebApplication(
+        self.web_app = self.webapp_class(
             self, self.kernel_manager, self.contents_manager,
             self.session_manager, self.kernel_spec_manager,
             self.config_manager,
